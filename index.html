@@ -1,27 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rent Divvy - Uri, David, Asaf & Maya</title>
+    <title>אימפריית הנדל״ן - משפחת גולדברג</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4A90E2;
-            --bg: #F4F7F6;
+            --gold: #D4AF37;
+            --gold-light: #F3E5AB;
+            --navy: #0A192F;
+            --navy-light: #172A45;
+            --bg: #F0F4F8;
             --card-bg: #FFFFFF;
-            --text: #333333;
-            --border: #E0E0E0;
-            --bit-color: #00CBA4;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --border: #E2E8F0;
+            --bit-color: #00B0F0;
+            --wa-color: #25D366;
+            --danger: #E74C3C;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: 'Rubik', sans-serif;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: var(--text-dark);
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
         }
 
         .container {
@@ -29,191 +37,247 @@
             width: 100%;
         }
 
-        h1, h2, h3 {
+        .header {
             text-align: center;
-            color: var(--primary);
+            color: var(--gold);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            color: #CCD6F6;
+            font-size: 16px;
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-top: 5px solid var(--gold);
+        }
+
+        h2, h3 {
+            color: var(--navy);
+            margin-top: 0;
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            font-weight: 700;
         }
 
         .form-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
         }
 
         input, select, button {
-            padding: 10px;
+            padding: 12px;
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
+            font-family: inherit;
         }
 
         input {
             flex: 1;
             min-width: 120px;
+            background-color: #F8FAFC;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
         }
 
         button {
-            background-color: var(--primary);
-            color: white;
+            background-color: var(--navy);
+            color: var(--gold);
             border: none;
             cursor: pointer;
             font-weight: bold;
-            transition: opacity 0.2s;
+            transition: all 0.2s ease;
         }
 
         button:hover {
-            opacity: 0.9;
+            background-color: var(--navy-light);
+            transform: translateY(-2px);
         }
 
-        .btn-secondary {
-            background-color: #7f8c8d;
-        }
+        .btn-primary { width: 100%; font-size: 18px; padding: 14px; }
+        .btn-secondary { background-color: #EDF2F7; color: var(--navy); }
+        .btn-secondary:hover { background-color: #E2E8F0; }
+        .btn-danger { background-color: #FEF2F2; color: var(--danger); }
+        .btn-danger:hover { background-color: #FEE2E2; }
 
         .house-item {
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-
-        .house-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
         }
 
         .house-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }
 
         .house-header h4 {
             margin: 0;
             font-size: 18px;
+            color: var(--navy);
         }
 
         .delete-btn {
-            background-color: #e74c3c;
-            padding: 5px 10px;
-            font-size: 12px;
+            background-color: transparent;
+            color: var(--danger);
+            padding: 6px 12px;
+            font-size: 14px;
+            border: 1px solid var(--danger);
         }
 
         .summary-stats {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
+            background: var(--gold-light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
             text-align: center;
-            margin-bottom: 20px;
-            background: #e1f0ff;
-            padding: 15px;
-            border-radius: 8px;
         }
 
         .summary-stats div {
+            flex: 1;
             display: flex;
             flex-direction: column;
         }
 
+        .summary-stats span {
+            color: var(--navy);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
         .summary-stats strong {
-            font-size: 24px;
-            color: var(--primary);
+            font-size: 26px;
+            color: var(--navy);
         }
 
         .transfer-list {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
 
         .transfer-item {
+            background: #F8FAFC;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .bit-btn {
-            background-color: var(--bit-color);
-            text-decoration: none;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            display: inline-block;
-            text-align: center;
+        .transfer-text {
+            font-size: 16px;
+            color: var(--text-dark);
         }
 
-        .actions {
+        .transfer-actions {
             display: flex;
-            justify-content: space-between;
             gap: 10px;
         }
 
-        .actions button {
+        .action-link {
             flex: 1;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
+
+        .bit-btn { background-color: var(--bit-color); }
+        .wa-btn { background-color: var(--wa-color); }
+
+        .app-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .app-actions button { flex: 1; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🏠 Rent Divvy</h1>
+    <div class="header">
+        <h1>👑 משפחת גולדברג</h1>
+        <p>ניהול אימפריית הנדל״ן</p>
+    </div>
 
     <div class="card">
-        <h2>Add a Property</h2>
+        <h2>הוספת נכס</h2>
         <div class="form-group">
-            <input type="text" id="houseName" placeholder="House Name (e.g. Florentin)">
-            <input type="number" id="regularRent" placeholder="Regular Rent (NIS)">
+            <input type="text" id="houseName" placeholder="שם הנכס (לדוג׳ פלורנטין)">
+            <input type="number" id="regularRent" placeholder="שכירות רגילה (₪)">
         </div>
-        <button style="width: 100%;" onclick="addHouse()">+ Add Property</button>
+        <button class="btn-primary" onclick="addHouse()">+ הוסף נכס לאימפריה</button>
     </div>
 
     <div class="card" id="housesContainer" style="display: none;">
-        <h2>Properties & Collection</h2>
+        <h2>נכסים וגבייה החודש</h2>
         <div id="housesList"></div>
     </div>
 
     <div class="card" id="summaryContainer" style="display: none;">
-        <h2>Monthly Settlement</h2>
+        <h2>התחשבנות חודשית</h2>
         <div class="summary-stats">
             <div>
-                <span>Total Income</span>
+                <span>סה״כ הכנסות</span>
                 <strong id="totalIncome">0</strong>
             </div>
             <div>
-                <span>Per Brother</span>
+                <span>חלק לכל אח</span>
                 <strong id="perBrother">0</strong>
             </div>
         </div>
 
-        <h3>Transfers Needed</h3>
+        <h3>העברות לביצוע</h3>
         <ul class="transfer-list" id="transferList"></ul>
     </div>
 
-    <div class="actions">
-        <button class="btn-secondary" onclick="shareApp()">🔗 Share Link</button>
-        <button class="btn-secondary" style="background-color: #e74c3c;" onclick="clearData()">🗑 Clear Data</button>
+    <div class="app-actions">
+        <button class="btn-secondary" onclick="shareApp()">🔗 שתף קישור לאחים</button>
+        <button class="btn-danger" onclick="clearData()">🗑 איפוס נתונים</button>
     </div>
 </div>
 
 <script>
-    const BROTHERS = ['Uri', 'David', 'Asaf', 'Maya'];
-    let state = {
-        houses: []
-    };
-
-    // --- Core Logic & Initialization ---
+    const BROTHERS = ['אורי', 'דוד', 'אסף', 'מאיה'];
+    let state = { houses: [] };
 
     function init() {
         loadData();
@@ -221,33 +285,26 @@
     }
 
     function loadData() {
-        // Check for shareable link data first
         const urlParams = new URLSearchParams(window.location.search);
         const sharedData = urlParams.get('data');
         
         if (sharedData) {
             try {
                 state = JSON.parse(decodeURIComponent(atob(sharedData)));
-                // Clear URL so it doesn't get stuck
                 window.history.replaceState({}, document.title, window.location.pathname);
-                saveData(); // Save shared data to local storage
+                saveData(); 
             } catch (e) {
-                console.error("Failed to parse shared data.", e);
+                console.error("שגיאה בטעינת נתונים.", e);
             }
         } else {
-            // Load from local storage
-            const stored = localStorage.getItem('rentDivvyData');
-            if (stored) {
-                state = JSON.parse(stored);
-            }
+            const stored = localStorage.getItem('goldbergRentData');
+            if (stored) state = JSON.parse(stored);
         }
     }
 
     function saveData() {
-        localStorage.setItem('rentDivvyData', JSON.stringify(state));
+        localStorage.setItem('goldbergRentData', JSON.stringify(state));
     }
-
-    // --- Actions ---
 
     function addHouse() {
         const nameInput = document.getElementById('houseName');
@@ -256,7 +313,7 @@
         const rent = parseFloat(rentInput.value);
 
         if (!name || isNaN(rent) || rent <= 0) {
-            alert('Please enter a valid house name and regular rent amount.');
+            alert('נא להזין שם נכס וסכום שכירות תקינים.');
             return;
         }
 
@@ -265,7 +322,7 @@
             name: name,
             regularRent: rent,
             overrideRent: null,
-            collector: BROTHERS[0] // Default to first brother
+            collector: BROTHERS[0] 
         });
 
         nameInput.value = '';
@@ -274,7 +331,7 @@
     }
 
     function deleteHouse(id) {
-        if(confirm("Remove this property?")) {
+        if(confirm("להסיר את הנכס הזה?")) {
             state.houses = state.houses.filter(h => h.id !== id);
             saveAndRender();
         }
@@ -293,7 +350,7 @@
     }
 
     function clearData() {
-        if(confirm("Are you sure you want to delete all houses and data?")) {
+        if(confirm("האם אתה בטוח שברצונך לאפס את כל הנתונים?")) {
             state.houses = [];
             saveAndRender();
         }
@@ -305,16 +362,14 @@
         
         if (navigator.clipboard) {
             navigator.clipboard.writeText(shareUrl).then(() => {
-                alert("Shareable link copied to clipboard!");
+                alert("הקישור הועתק! אפשר להדביק בוואטסאפ של המשפחה.");
             }).catch(err => {
-                prompt("Copy this link to share:", shareUrl);
+                prompt("העתק את הקישור הזה:", shareUrl);
             });
         } else {
-            prompt("Copy this link to share:", shareUrl);
+            prompt("העתק את הקישור הזה:", shareUrl);
         }
     }
-
-    // --- Render Logic ---
 
     function saveAndRender() {
         saveData();
@@ -339,21 +394,19 @@
         list.innerHTML = '';
 
         state.houses.forEach(house => {
-            const currentAmount = house.overrideRent !== null ? house.overrideRent : house.regularRent;
-            
             let html = `
                 <div class="house-item">
                     <div class="house-header">
-                        <h4>${house.name} <small style="color:gray; font-weight:normal;">(Regular: ${house.regularRent} NIS)</small></h4>
-                        <button class="delete-btn" onclick="deleteHouse('${house.id}')">X</button>
+                        <h4>${house.name} <small style="color:var(--text-light); font-weight:normal;">(רגיל: ₪${house.regularRent})</small></h4>
+                        <button class="delete-btn" onclick="deleteHouse('${house.id}')">מחק</button>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
                         <input type="number" 
-                               placeholder="Override Rent (Optional)" 
+                               placeholder="סכום שנגבה בפועל (אופציונלי)" 
                                value="${house.overrideRent !== null ? house.overrideRent : ''}"
                                onchange="updateHouse('${house.id}', 'overrideRent', this.value)">
                         <select onchange="updateHouse('${house.id}', 'collector', this.value)">
-                            ${BROTHERS.map(b => `<option value="${b}" ${house.collector === b ? 'selected' : ''}>${b} collected</option>`).join('')}
+                            ${BROTHERS.map(b => `<option value="${b}" ${house.collector === b ? 'selected' : ''}>${b} גבה/תה</option>`).join('')}
                         </select>
                     </div>
                 </div>
@@ -371,9 +424,8 @@
         
         container.style.display = 'block';
 
-        // 1. Calculate totals
         let totalIncome = 0;
-        let collectedByBrother = { Uri: 0, David: 0, Asaf: 0, Maya: 0 };
+        let collectedByBrother = { 'אורי': 0, 'דוד': 0, 'אסף': 0, 'מאיה': 0 };
 
         state.houses.forEach(house => {
             const amount = house.overrideRent !== null ? house.overrideRent : house.regularRent;
@@ -383,12 +435,9 @@
 
         const perBrother = totalIncome / 4;
 
-        document.getElementById('totalIncome').innerText = totalIncome.toFixed(2) + ' ₪';
-        document.getElementById('perBrother').innerText = perBrother.toFixed(2) + ' ₪';
+        document.getElementById('totalIncome').innerText = '₪' + totalIncome.toFixed(0);
+        document.getElementById('perBrother').innerText = '₪' + perBrother.toFixed(0);
 
-        // 2. Calculate balances (Amount collected - Target amount)
-        // Positive balance = they hold extra cash, they need to pay others (Debtor)
-        // Negative balance = they are short, they need to receive cash (Creditor)
         let debtors = [];
         let creditors = [];
 
@@ -398,10 +447,8 @@
             if (balance < -0.01) creditors.push({ name: b, amount: Math.abs(balance) });
         });
 
-        // 3. Match debtors to creditors
         let transfers = [];
-        let i = 0; 
-        let j = 0;
+        let i = 0; let j = 0;
 
         while (i < debtors.length && j < creditors.length) {
             let debtor = debtors[i];
@@ -421,29 +468,32 @@
             if (creditor.amount < 0.01) j++;
         }
 
-        // 4. Render transfers
         const transferList = document.getElementById('transferList');
         transferList.innerHTML = '';
 
         if (transfers.length === 0) {
-            transferList.innerHTML = '<li class="transfer-item">All settled up! No transfers needed.</li>';
+            transferList.innerHTML = '<li class="transfer-item" style="text-align:center;">הכל מאוזן! אין צורך בהעברות. 🎉</li>';
         } else {
             transfers.forEach(t => {
-                const amountText = t.amount.toFixed(2);
-                // The bitpay:// scheme attempts to open the Bit app on mobile devices.
+                const amountText = t.amount.toFixed(0);
+                const waMessage = encodeURIComponent(`היי ${t.to}, אני חייב/ת לך ₪${amountText} על השכירות של החודש. מעביר/ה בביט! 💸`);
+                
                 transferList.insertAdjacentHTML('beforeend', `
                     <li class="transfer-item">
-                        <span><strong>${t.from}</strong> pays <strong>${t.to}</strong>: ${amountText} ₪</span>
-                        <a href="bitpay://" class="bit-btn">Pay w/ Bit</a>
+                        <div class="transfer-text">
+                            <strong>${t.from}</strong> צריך/ה להעביר ל<strong>${t.to}</strong>: ₪${amountText}
+                        </div>
+                        <div class="transfer-actions">
+                            <a href="bitpay://" class="action-link bit-btn">📱 פתח ביט</a>
+                            <a href="https://wa.me/?text=${waMessage}" target="_blank" class="action-link wa-btn">💬 סמס בווטסאפ</a>
+                        </div>
                     </li>
                 `);
             });
         }
     }
 
-    // Run on load
     init();
-
 </script>
 </body>
 </html>
