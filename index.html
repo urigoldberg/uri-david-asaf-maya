@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent Divvy - Uri, David, Asaf & Maya</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --bg: #F4F7F6;
+            --card-bg: #FFFFFF;
+            --text: #333333;
+            --border: #E0E0E0;
+            --bit-color: #00CBA4;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        input, select, button {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background-color: #7f8c8d;
+        }
+
+        .house-item {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .house-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .house-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .house-header h4 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-bottom: 20px;
+            background: #e1f0ff;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .summary-stats div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .summary-stats strong {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .transfer-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .transfer-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .bit-btn {
+            background-color: var(--bit-color);
+            text-decoration: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .actions button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏠 Rent Divvy</h1>
+
+    <div class="card">
+        <h2>Add a Property</h2>
+        <div class="form-group">
+            <input type="text" id="houseName" placeholder="House Name (e.g. Florentin)">
+            <input type="number" id="regularRent" placeholder="Regular Rent (NIS)">
+        </div>
+        <button style="width: 100%;" onclick="addHouse()">+ Add Property</button>
+    </div>
+
+    <div class="card" id="housesContainer" style="display: none;">
+        <h2>Properties & Collection</h2>
+        <div id="housesList"></div>
+    </div>
+
+    <div class="card" id="summaryContainer" style="display: none;">
+        <h2>Monthly Settlement</h2>
+        <div class="summary-stats">
+            <div>
+                <span>Total Income</span>
+                <strong id="totalIncome">0</strong>
+            </div>
+            <div>
+                <span>Per Brother</span>
+                <strong id="perBrother">0</strong>
+            </div>
+        </div>
+
+        <h3>Transfers Needed</h3>
+        <ul class="transfer-list" id="transferList"></ul>
+    </div>
+
+    <div class="actions">
+        <button class="btn-secondary" onclick="shareApp()">🔗 Share Link</button>
+        <button class="btn-secondary" style="background-color: #e74c3c;" onclick="clearData()">🗑 Clear Data</button>
+    </div>
+</div>
+
+<script>
+    const BROTHERS = ['Uri', 'David', 'Asaf', 'Maya'];
+    let state = {
+        houses: []
+    };
+
+    // --- Core Logic & Initialization ---
+
+    function init() {
+        loadData();
+        render();
+    }
+
+    function loadData() {
+        // Check for shareable link data first
+        const urlParams = new URLSearchParams(window.location.search);
+        const sharedData = urlParams.get('data');
+        
+        if (sharedData) {
+            try {
+                state = JSON.parse(decodeURIComponent(atob(sharedData)));
+                // Clear URL so it doesn't get stuck
+                window.history.replaceState({}, document.title, window.location.pathname);
+                saveData(); // Save shared data to local storage
+            } catch (e) {
+                console.error("Failed to parse shared data.", e);
+            }
+        } else {
+            // Load from local storage
+            const stored = localStorage.getItem('rentDivvyData');
+            if (stored) {
+                state = JSON.parse(stored);
+            }
+        }
+    }
+
+    function saveData() {
+        localStorage.setItem('rentDivvyData', JSON.stringify(state));
+    }
+
+    // --- Actions ---
+
+    function addHouse() {
+        const nameInput = document.getElementById('houseName');
+        const rentInput = document.getElementById('regularRent');
+        const name = nameInput.value.trim();
+        const rent = parseFloat(rentInput.value);
+
+        if (!name || isNaN(rent) || rent <= 0) {
+            alert('Please enter a valid house name and regular rent amount.');
+            return;
+        }
+
+        state.houses.push({
+            id: Date.now().toString(),
+            name: name,
+            regularRent: rent,
+            overrideRent: null,
+            collector: BROTHERS[0] // Default to first brother
+        });
+
+        nameInput.value = '';
+        rentInput.value = '';
+        saveAndRender();
+    }
+
+    function deleteHouse(id) {
+        if(confirm("Remove this property?")) {
+            state.houses = state.houses.filter(h => h.id !== id);
+            saveAndRender();
+        }
+    }
+
+    function updateHouse(id, field, value) {
+        const house = state.houses.find(h => h.id === id);
+        if (house) {
+            if (field === 'overrideRent') {
+                house.overrideRent = value === '' ? null : parseFloat(value);
+            } else {
+                house[field] = value;
+            }
+            saveAndRender();
+        }
+    }
+
+    function clearData() {
+        if(confirm("Are you sure you want to delete all houses and data?")) {
+            state.houses = [];
+            saveAndRender();
+        }
+    }
+
+    function shareApp() {
+        const encodedData = btoa(encodeURIComponent(JSON.stringify(state)));
+        const shareUrl = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
+        
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert("Shareable link copied to clipboard!");
+            }).catch(err => {
+                prompt("Copy this link to share:", shareUrl);
+            });
+        } else {
+            prompt("Copy this link to share:", shareUrl);
+        }
+    }
+
+    // --- Render Logic ---
+
+    function saveAndRender() {
+        saveData();
+        render();
+    }
+
+    function render() {
+        renderHouses();
+        renderSummary();
+    }
+
+    function renderHouses() {
+        const container = document.getElementById('housesContainer');
+        const list = document.getElementById('housesList');
+        
+        if (state.houses.length === 0) {
+            container.style.display = 'none';
+            return;
+        }
+        
+        container.style.display = 'block';
+        list.innerHTML = '';
+
+        state.houses.forEach(house => {
+            const currentAmount = house.overrideRent !== null ? house.overrideRent : house.regularRent;
+            
+            let html = `
+                <div class="house-item">
+                    <div class="house-header">
+                        <h4>${house.name} <small style="color:gray; font-weight:normal;">(Regular: ${house.regularRent} NIS)</small></h4>
+                        <button class="delete-btn" onclick="deleteHouse('${house.id}')">X</button>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <input type="number" 
+                               placeholder="Override Rent (Optional)" 
+                               value="${house.overrideRent !== null ? house.overrideRent : ''}"
+                               onchange="updateHouse('${house.id}', 'overrideRent', this.value)">
+                        <select onchange="updateHouse('${house.id}', 'collector', this.value)">
+                            ${BROTHERS.map(b => `<option value="${b}" ${house.collector === b ? 'selected' : ''}>${b} collected</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+            `;
+            list.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function renderSummary() {
+        const container = document.getElementById('summaryContainer');
+        if (state.houses.length === 0) {
+            container.style.display = 'none';
+            return;
+        }
+        
+        container.style.display = 'block';
+
+        // 1. Calculate totals
+        let totalIncome = 0;
+        let collectedByBrother = { Uri: 0, David: 0, Asaf: 0, Maya: 0 };
+
+        state.houses.forEach(house => {
+            const amount = house.overrideRent !== null ? house.overrideRent : house.regularRent;
+            totalIncome += amount;
+            collectedByBrother[house.collector] += amount;
+        });
+
+        const perBrother = totalIncome / 4;
+
+        document.getElementById('totalIncome').innerText = totalIncome.toFixed(2) + ' ₪';
+        document.getElementById('perBrother').innerText = perBrother.toFixed(2) + ' ₪';
+
+        // 2. Calculate balances (Amount collected - Target amount)
+        // Positive balance = they hold extra cash, they need to pay others (Debtor)
+        // Negative balance = they are short, they need to receive cash (Creditor)
+        let debtors = [];
+        let creditors = [];
+
+        BROTHERS.forEach(b => {
+            let balance = collectedByBrother[b] - perBrother;
+            if (balance > 0.01) debtors.push({ name: b, amount: balance });
+            if (balance < -0.01) creditors.push({ name: b, amount: Math.abs(balance) });
+        });
+
+        // 3. Match debtors to creditors
+        let transfers = [];
+        let i = 0; 
+        let j = 0;
+
+        while (i < debtors.length && j < creditors.length) {
+            let debtor = debtors[i];
+            let creditor = creditors[j];
+            let transferAmount = Math.min(debtor.amount, creditor.amount);
+
+            transfers.push({
+                from: debtor.name,
+                to: creditor.name,
+                amount: transferAmount
+            });
+
+            debtor.amount -= transferAmount;
+            creditor.amount -= transferAmount;
+
+            if (debtor.amount < 0.01) i++;
+            if (creditor.amount < 0.01) j++;
+        }
+
+        // 4. Render transfers
+        const transferList = document.getElementById('transferList');
+        transferList.innerHTML = '';
+
+        if (transfers.length === 0) {
+            transferList.innerHTML = '<li class="transfer-item">All settled up! No transfers needed.</li>';
+        } else {
+            transfers.forEach(t => {
+                const amountText = t.amount.toFixed(2);
+                // The bitpay:// scheme attempts to open the Bit app on mobile devices.
+                transferList.insertAdjacentHTML('beforeend', `
+                    <li class="transfer-item">
+                        <span><strong>${t.from}</strong> pays <strong>${t.to}</strong>: ${amountText} ₪</span>
+                        <a href="bitpay://" class="bit-btn">Pay w/ Bit</a>
+                    </li>
+                `);
+            });
+        }
+    }
+
+    // Run on load
+    init();
+
+</script>
+</body>
+</html>
